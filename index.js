@@ -6,6 +6,14 @@ function formatarMoeda(valor) {
       minimumFractionDigits: 2 }).format(valor/100);
 }
 
+class Repositorio {
+  constructor() {
+    this.pecas = JSON.parse(readFileSync('./pecas.json'));
+  }
+
+  getPeca(apre) { return this.pecas[apre.id]; }
+}
+
 class ServicoCalculoFatura {
   constructor(repo) {
     this.repo = repo;
@@ -71,10 +79,9 @@ function gerarFaturaStr (fatura, calc) {
 }
 
 const faturas = JSON.parse(readFileSync('./faturas.json'));
-const pecas = JSON.parse(readFileSync('./pecas.json'));
 
-const repoSimples = { getPeca: apre => pecas[apre.id] };
-const calc = new ServicoCalculoFatura(repoSimples);
+const repo = new Repositorio();
+const calc = new ServicoCalculoFatura(repo);
 
 const faturaStr = gerarFaturaStr(faturas, calc);
 console.log(faturaStr);
